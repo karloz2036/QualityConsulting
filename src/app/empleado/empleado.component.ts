@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {EmpleadoService} from '../../services/Empleado/empleado.service'
 import {EstadoService} from '../../services/Estado/estado.service'
 import {PuestoService} from '../../services/Puesto/puesto.service'
@@ -21,8 +21,8 @@ export class EmpleadoComponent implements OnInit {
   total: number = 0;
   totalRegistros: number = 0;
   esEditar: boolean = false;
-
   empleados : EmpleadoModel;
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(private empleadoService: EmpleadoService,private puestoService: PuestoService,
               private estadoService: EstadoService) {
@@ -75,7 +75,7 @@ export class EmpleadoComponent implements OnInit {
         this.total = response.data.total;
         this.PuestosResultados = response.data.info.result;
         this.totalRegistros = response.totalRegistros;
-        console.log(this.PuestosResultados, 'PuestosResultados');
+        //console.log(this.PuestosResultados, 'PuestosResultados');
       }
     }, (err) => {
         alert("error en servicio");
@@ -99,7 +99,7 @@ export class EmpleadoComponent implements OnInit {
         this.total = response.data.total;
         this.EstadosResultados = response.data.info.result;
         this.totalRegistros = response.totalRegistros;
-        console.log(this.EstadosResultados, 'EstadosEstados');
+        //console.log(this.EstadosResultados, 'EstadosEstados');
       }
     }, (err) => {
         alert("error en servicio");
@@ -134,6 +134,7 @@ export class EmpleadoComponent implements OnInit {
         this.totalRegistros = response.totalRegistros;
         this.buscarEmpleados();
         this.empleados = new EmpleadoModel();
+        this.fileInput.nativeElement.value = '';
         this.esEditar = false;
         alert("Empleado agregado Correctamente");
         
@@ -155,6 +156,7 @@ export class EmpleadoComponent implements OnInit {
       } else {
         this.buscarEmpleados();
         this.empleados = new EmpleadoModel();
+        this.fileInput.nativeElement.value = '';
         this.esEditar = false;
         alert("Empleado actualizado Correctamente");
       }
@@ -189,22 +191,25 @@ export class EmpleadoComponent implements OnInit {
   }
   
   eliminarEmpleado(empleadoId: number){
-    this.empleadoService.eliminarEmpleado(empleadoId).subscribe(response => {
-      if (response == null) {
-        alert("Error en el servicio");
-      } else if (response.isCorrect == 'false') {
-        alert(response.message);
-      } else if (response.totalRegistros == 0) {
-        alert("Sin Resultados");          
-      } else {
-        this.buscarEmpleados();
-        alert("Empleado eliminado Correctamente");
-        
-      }
-    }, (err) => {
-      alert("error en servicio");
-      console.log(err, 'error catch');
-    });
+
+    if (confirm("¿Está seguro de eliminar este empleado?")) {
+      this.empleadoService.eliminarEmpleado(empleadoId).subscribe(response => {
+        if (response == null) {
+          alert("Error en el servicio");
+        } else if (response.isCorrect == 'false') {
+          alert(response.message);
+        } else if (response.totalRegistros == 0) {
+          alert("Sin Resultados");          
+        } else {
+          this.buscarEmpleados();
+          alert("Empleado eliminado Correctamente");
+          
+        }
+      }, (err) => {
+        alert("error en servicio");
+        console.log(err, 'error catch');
+      });
+    }
   }
 
   formatoFecha(fecha: string): string {
@@ -213,6 +218,17 @@ export class EmpleadoComponent implements OnInit {
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const day = ('0' + date.getDate()).slice(-2);
     return `${year}-${month}-${day}`;
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.empleados.Fotografia = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
 
