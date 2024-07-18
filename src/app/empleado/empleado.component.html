@@ -1,0 +1,182 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-sm-10">
+
+            <div class="row">
+                <div class="col-sm-11">
+                    <!-- buscar empleados -->
+                    <div id="table-admin">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>
+                                                Empleados
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="card-block">
+                                        <form novalidate (ngSubmit)="validarFormulario(formEmpleados)" #formEmpleados="ngForm">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Nombre</label>
+                                                        <input type="text" class="form-control" placeholder='Nombre' name="Nombre" [(ngModel)]="empleados.Nombre" />
+                                                    </div>
+                                                </div>
+        
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Apellido</label>
+                                                        <input type="text" class="form-control" placeholder='Apellido' name="Apellido" [(ngModel)]="empleados.Apellido" />
+                                                    </div>
+                                                </div>
+        
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Puesto</label>
+                                                        <select class="form-control" name="PuestoId" id="PuestoId" [(ngModel)]="empleados.Puesto.Id">
+                                                            <option value="-1">Selecciona una Opción</option>
+                                                            <option value="{{ puesto.id }}" *ngFor="let puesto of PuestosResultados">
+                                                                {{ puesto.nombre }}
+                                                            </option>
+                                                        </select>
+        
+                                                    </div>
+                                                </div>
+        
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Fecha Nacimiento</label>
+                                                        <input type="date" class="form-control"  name="FechaNacimiento" [(ngModel)]="empleados.FechaNacimiento" />
+                                                    </div>
+                                                </div>
+                                            </div>
+        
+                                            <div class="row">
+        
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Fecha Contratación</label>
+                                                        <input type="date" class="form-control" name="FechaContratacion" [(ngModel)]="empleados.FechaContratacion" />
+                                                    </div>
+                                                </div>
+        
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Dirección</label>
+                                                        <input type="text" class="form-control" placeholder='Dirección' name="Direccion" [(ngModel)]="empleados.Direccion" />
+                                                    </div>
+                                                </div>
+        
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Teléfono</label>
+                                                        <input type="text" class="form-control" placeholder='Teléfono' name="Telefono" [(ngModel)]="empleados.Telefono" />
+                                                    </div>
+                                                </div>
+        
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Correo Electrónico</label>
+                                                        <input type="text" class="form-control" placeholder='Correo Electrónico' name="CorreoElectronico" [(ngModel)]="empleados.CorreoElectronico" />
+                                                    </div>
+                                                </div>
+        
+                                                <div class="col">
+                                                    <div class="form-group pt-3">
+                                                        <label>Estado</label>
+                                                        <select class="form-control" name="EstadoId" id="EstadoId" [(ngModel)]="empleados.Estado.Id">
+                                                            <option value="-1">Selecciona una Opción</option>
+                                                            <option value="{{ estado.id }}" *ngFor="let estado of EstadosResultados">
+                                                                {{ estado.nombre }}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+        
+                                            <div class="text-right pt-3">
+                                                <button type="submit" class="btn btn-info col col-md-2" 
+                                                [innerText]="esEditar ? 'Actualizar Empleado' : 'Agregar Empleado'">
+                                                    Buscar
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- agregar Empleados -->
+                    <div class="card-block">
+                        <div class="table-border-style table-pad-10 table-responsive">
+                            <table class="table table-bordered table-striped"> 
+                            <!-- <table cellspacing="2" cellpadding="2" border="1"> -->
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Nombre</th>
+                                        <th>Puesto</th>
+                                        <th>Fecha Nacimiento</th>
+                                        <th>Fecha Contratación</th>
+                                        <th>Dirección</th>
+                                        <th>Teléfono</th>
+                                        <th>Correo Electrónico</th>
+                                        <th>Estado</th>
+                                        <th>Editar</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let empleado of empleadosResultados">
+                                        <th scope="row">{{empleado.id}}</th>
+                                        <td>{{empleado.nombre}} {{empleado.apellido}}</td>
+                                        <td>{{empleado.puesto.nombre}}</td>
+                                        <td>{{empleado.fechaNacimiento | date}}</td>
+                                        <td>{{ empleado.fechaContratacion | date}} </td>
+                                        <td>{{ empleado.direccion }}</td>
+                                        <td>{{ empleado.telefono }}</td>
+                                        <td>{{ empleado.correoElectronico }}</td>
+                                        <td>{{ empleado.estado.nombre }}</td>
+                                        
+                                        <td (click)="editarEmpleado(empleado.id)" class="text-center" style="cursor: pointer;">
+                                            <span class="mytooltip tooltip-effect-5">
+                                                <span class="tooltip-item">
+                                                    <i class="icofont icofont-trash"></i>
+                                                </span>
+                                                <span class="tooltip-content clearfix">
+                                                    <span class="tooltip-text text-center">Actualizar</span>
+                                                </span>
+                                            </span>
+                                        </td>
+        
+                                        <td (click)="eliminarEmpleado(empleado.id)" class="text-center" style="cursor: pointer;">
+                                            <span class="mytooltip tooltip-effect-5">
+                                                <span class="tooltip-item">
+                                                    <i class="icofont icofont-trash"></i>
+                                                </span>
+                                                <span class="tooltip-content clearfix">
+                                                    <span class="tooltip-text text-center">Eliminar</span>
+                                                </span>
+                                            </span>
+                                        </td>
+        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+    
+    
